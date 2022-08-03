@@ -1,0 +1,21 @@
+query GetAllCategoriesWithPosts {
+  categories(orderBy: publishedAt_DESC, first: 1000000000) {
+    id
+    name
+    description
+    posts {
+      id
+      slug
+      title
+      categories {
+        id
+        name
+      }
+      archive {
+        id
+        name
+      }
+      publishedAt
+    }
+  }
+}

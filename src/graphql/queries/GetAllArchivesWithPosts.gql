@@ -1,0 +1,16 @@
+query GetAllArchivesWithPosts {
+  archives(orderBy: publishedAt_DESC, first: 1000000000) {
+    id
+    name
+    posts {
+      id
+      slug
+      title
+      publishedAt
+      categories {
+        id
+        name
+      }
+    }
+  }
+}

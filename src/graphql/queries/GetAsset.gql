@@ -1,0 +1,7 @@
+query GetAsset($slug: String!) {
+  asset(where: { slug: $slug }) {
+    fileName
+    url
+    downloadable
+  }
+}

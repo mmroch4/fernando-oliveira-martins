@@ -1,0 +1,16 @@
+query GetPostsToRecommend {
+  posts(orderBy: publishedAt_DESC, first: 1000000000) {
+    id
+    slug
+    title
+    publishedAt
+    archive {
+      id
+      name
+    }
+    categories {
+      id
+      name
+    }
+  }
+}

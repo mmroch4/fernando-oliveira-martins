@@ -1,0 +1,9 @@
+query GetAllPostsToSelect {
+  posts(orderBy: publishedAt_DESC, first: 1000000000) {
+    slug
+    archive {
+      name
+    }
+    publishedAt
+  }
+}

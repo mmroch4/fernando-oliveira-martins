@@ -1,0 +1,6 @@
+query GetAllCategories {
+  categories(orderBy: publishedAt_DESC, first: 1000000000) {
+    id
+    name
+  }
+}

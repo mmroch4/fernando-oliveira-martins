@@ -25,8 +25,4 @@ export const StyledPopoverContent = styled("div", {
 
   padding: "0.5rem 1rem",
   marginBlock: "0.25rem",
-
-  WebkitBoxShadow: "0 0 5px 0 rgba(0,0,0,0.25)",
-  MozBoxShadow: "0 0 5px 0 rgba(0,0,0,0.25)",
-  boxShadow: "0 0 5px 0 rgba(0, 0, 0, 0.25)",
 });

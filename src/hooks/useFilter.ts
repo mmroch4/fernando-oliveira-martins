@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Post } from "../graphql/schema";
 
-export function useFilter<V extends Post>(values: V[]) {
-  const [filters, setFilters] = useState<string[]>([]);
+export function useFilter<V extends Post>(values: V[], fixed: string[]) {
+  const [filters, setFilters] = useState<string[]>([...fixed]);
 
   const [searchedValues, setSearchedValues] = useState<V[]>([...values]);
 
@@ -50,7 +50,7 @@ export function useFilter<V extends Post>(values: V[]) {
   }
 
   function handleClearFilters() {
-    setFilters([]);
+    setFilters([...fixed]);
   }
 
   function isFilter(filter: string): boolean {
@@ -63,6 +63,6 @@ export function useFilter<V extends Post>(values: V[]) {
     handleClick,
     handleFilter,
     handleClearFilters,
-    isFilter
+    isFilter,
   };
 }

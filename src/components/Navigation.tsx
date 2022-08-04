@@ -125,6 +125,25 @@ export const ItemContainerItem = styled("span", {
         },
       },
     },
+    locked: {
+      true: {
+        background: "$backgroundColorTertiary20",
+
+        borderColor: '$backgroundColorTertiary20',
+
+        "&:hover": {
+          background: "$backgroundColorTertiary30",
+        },
+
+        "& span": {
+          background: "$backgroundColorTertiary30",
+
+          "& svg": {
+            stroke: "$colorTertiary",
+          },
+        },
+      },
+    },
   },
 });
 
@@ -171,9 +190,9 @@ export const Input = styled("input", {
     color: "$fontPrimary",
   },
 
-  '@md599': {
-    width: 150
-  }
+  "@md399": {
+    width: 150,
+  },
 });
 
 export const ItemContainerHeaderTitle = styled("span", {

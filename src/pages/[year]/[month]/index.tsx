@@ -1,17 +1,46 @@
+import * as LabelPrimitive from "@radix-ui/react-label";
 import { format } from "date-fns";
 import PT from "date-fns/locale/pt";
 import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
+import { TbAdjustments, TbMinus, TbPlus, TbSearch } from "react-icons/tb";
+import { CategoriesContainer } from "../..";
 import { Footer } from "../../../components/Footer";
 import { Hero } from "../../../components/Hero";
-import { Navigation } from "../../../components/Navigation";
+import { Loading } from "../../../components/Loading";
+import {
+  Icon,
+  Input,
+  Item,
+  ItemContainerHeader,
+  ItemContainerHeaderTitle,
+  ItemContainerHeaderTypo,
+  ItemContainerItem,
+  Navigation,
+  StyledInnerContainer,
+} from "../../../components/Navigation";
+import { Toolbar } from "../../../components/Toolbar";
+import {
+  Popover,
+  StyledPopoverContent,
+} from "../../../components/utils/Popover";
+import {
+  StyledTooltipContent,
+  Tooltip,
+} from "../../../components/utils/Tooltip";
 import {
   Archive,
+  Category,
   GetAllArchivesWithPostsDocument,
   GetAllArchivesWithPostsQuery,
+  GetAllCategoriesDocument,
+  GetAllCategoriesQuery,
+  Post,
 } from "../../../graphql/schema";
+import { useFilter } from "../../../hooks/useFilter";
+import { useSearch } from "../../../hooks/useSearch";
 import { apolloClient } from "../../../lib/apollo";
 import { styled } from "../../../stitches/stitches.config";
 import { months } from "../../../utils/months";
@@ -19,7 +48,7 @@ import { months } from "../../../utils/months";
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
     paths: [],
-    fallback: true,
+    fallback: "blocking",
   };
 };
 
@@ -52,9 +81,16 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       revalidate: 1 * 60 * 60, // 1 hour
     };
 
+  const {
+    data: { categories },
+  } = await apolloClient.query<GetAllCategoriesQuery>({
+    query: GetAllCategoriesDocument,
+  });
+
   return {
     props: {
       archive: selectedArchive,
+      categories,
     },
     revalidate: 10 * 60, // 10 minutes
   };
@@ -62,6 +98,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 interface IProps {
   archive: Archive;
+  categories: Category[];
 }
 
 const Main = styled("main", {
@@ -137,24 +174,92 @@ const EmptyMessage = styled("h2", {
   textAlign: "center",
 });
 
-const Page: NextPage<IProps> = ({ archive }) => {
+const Page: NextPage<IProps> = ({ archive, categories }) => {
   const { isFallback } = useRouter();
 
   const shareMessage = "Super recomendo esse conteúdo";
 
-  if (isFallback) {
-    return (
-      <>
-        <h1>Loading...</h1>
-      </>
-    );
-  }
+  const {
+    values: searchedValues,
+    search,
+    setSearch,
+  } = useSearch<Post>(archive.posts, ({ title }) => {
+    return title.toLowerCase().includes(search.toLowerCase());
+  });
+
+  const { values, handleClick, handleClearFilters, isFilter } = useFilter<Post>(
+    searchedValues,
+    []
+  );
+
+  if (isFallback) return <Loading size={"md"} />;
 
   const [archiveMonth, archiveYear] = archive.name.split(" ") as string[];
 
   return (
     <>
-      <Navigation />
+      <Navigation>
+        <LabelPrimitive.Root asChild htmlFor="search-input">
+          <Item input>
+            <TbSearch />
+
+            <Input
+              type="search"
+              placeholder="Pesquisar"
+              id="search-input"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </Item>
+        </LabelPrimitive.Root>
+
+        <Popover
+          trigger={
+            <Item>
+              <TbAdjustments />
+            </Item>
+          }
+          content={
+            <StyledPopoverContent>
+              <ItemContainerHeader>
+                <ItemContainerHeaderTitle>Categorias</ItemContainerHeaderTitle>
+
+                <Tooltip
+                  trigger={
+                    <ItemContainerHeaderTypo onClick={handleClearFilters}>
+                      limpar
+                    </ItemContainerHeaderTypo>
+                  }
+                  content={
+                    <StyledTooltipContent>Limpar filtros</StyledTooltipContent>
+                  }
+                />
+              </ItemContainerHeader>
+
+              <CategoriesContainer>
+                {categories.map((category) => {
+                  return (
+                    <ItemContainerItem
+                      key={category.id}
+                      active={isFilter(category.name.toLowerCase())}
+                      onClick={() => handleClick(category.name.toLowerCase())}
+                    >
+                      {category.name}
+                      <Icon>
+                        {isFilter(category.name.toLowerCase()) ? (
+                          <TbMinus />
+                        ) : (
+                          <TbPlus />
+                        )}
+                      </Icon>
+                    </ItemContainerItem>
+                  );
+                })}
+              </CategoriesContainer>
+            </StyledPopoverContent>
+          }
+        />
+      </Navigation>
 
       <Hero
         share={{
@@ -166,10 +271,81 @@ const Page: NextPage<IProps> = ({ archive }) => {
         }}
       />
 
+      <Toolbar>
+        <StyledInnerContainer>
+          <LabelPrimitive.Root asChild htmlFor="search-input">
+            <Item input>
+              <TbSearch />
+
+              <Input
+                type="search"
+                placeholder="Pesquisar"
+                id="search-input"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </Item>
+          </LabelPrimitive.Root>
+        </StyledInnerContainer>
+
+        <StyledInnerContainer>
+          <Popover
+            trigger={
+              <Item>
+                <TbAdjustments />
+              </Item>
+            }
+            content={
+              <StyledPopoverContent>
+                <ItemContainerHeader>
+                  <ItemContainerHeaderTitle>
+                    Categorias
+                  </ItemContainerHeaderTitle>
+
+                  <Tooltip
+                    trigger={
+                      <ItemContainerHeaderTypo onClick={handleClearFilters}>
+                        limpar
+                      </ItemContainerHeaderTypo>
+                    }
+                    content={
+                      <StyledTooltipContent>
+                        Limpar filtros
+                      </StyledTooltipContent>
+                    }
+                  />
+                </ItemContainerHeader>
+
+                <CategoriesContainer>
+                  {categories.map((category) => {
+                    return (
+                      <ItemContainerItem
+                        key={category.id}
+                        active={isFilter(category.name.toLowerCase())}
+                        onClick={() => handleClick(category.name.toLowerCase())}
+                      >
+                        {category.name}
+                        <Icon>
+                          {isFilter(category.name.toLowerCase()) ? (
+                            <TbMinus />
+                          ) : (
+                            <TbPlus />
+                          )}
+                        </Icon>
+                      </ItemContainerItem>
+                    );
+                  })}
+                </CategoriesContainer>
+              </StyledPopoverContent>
+            }
+          />
+        </StyledInnerContainer>
+      </Toolbar>
+
       {archive.posts.length > 0 ? (
         <Main>
           <StyledPostsContainer>
-            {archive.posts.map((post) => {
+            {values.map((post) => {
               return (
                 <StyledPost key={post.id}>
                   <Link

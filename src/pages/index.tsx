@@ -43,7 +43,7 @@ import { apolloClient } from "../lib/apollo";
 import { styled } from "../stitches/stitches.config";
 import { months } from "../utils/months";
 
-const CategoriesContainer = styled("div", {
+export const CategoriesContainer = styled("div", {
   display: "flex",
   flexDirection: "row",
   flexWrap: "wrap",
@@ -153,7 +153,7 @@ const StyledPost = styled("div", {
   },
 });
 
-const StyledArchives = styled("div", {
+export const StyledArchives = styled("div", {
   "& h3": {
     marginBottom: "0.5rem",
   },
@@ -256,7 +256,7 @@ const Page: NextPage<IProps> = ({ posts, categories, archives }) => {
   });
 
   const { values, handleClick, handleClearFilters, isFilter } =
-    useFilter<Post>(searchedValues);
+    useFilter<Post>(searchedValues, []);
 
   return (
     <>
@@ -344,7 +344,9 @@ const Page: NextPage<IProps> = ({ posts, categories, archives }) => {
               />
             </Item>
           </LabelPrimitive.Root>
+        </StyledInnerContainer>
 
+        <StyledInnerContainer>
           <Popover
             trigger={
               <Item>
@@ -395,9 +397,7 @@ const Page: NextPage<IProps> = ({ posts, categories, archives }) => {
               </StyledPopoverContent>
             }
           />
-        </StyledInnerContainer>
 
-        <StyledInnerContainer>
           <Popover
             trigger={
               <Item>

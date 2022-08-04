@@ -380,6 +380,8 @@ const StyledInfo = styled("div", {
   justifyContent: "space-between",
   alignItems: "center",
 
+  textAlign: "center",
+
   "& div": {
     height: "100%",
 
@@ -439,9 +441,7 @@ const Page: NextPage<IProps> = ({ post, recommendedPosts }) => {
 
   const shareMessage = "Super recomendo esse conteúdo";
 
-  if (isFallback) {
-    return <Loading size={"md"} />;
-  }
+  if (isFallback) return <Loading size={"md"} />;
 
   const [archiveMonth, archiveYear] = post.archive?.name.split(" ") as string[];
 

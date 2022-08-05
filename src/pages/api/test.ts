@@ -8,6 +8,7 @@ export default async function handler(
 ) {
   const { body } = req;
 
+  console.log(req);
   console.log(body);
 
   res.json({ body });

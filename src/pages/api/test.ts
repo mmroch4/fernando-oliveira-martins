@@ -29,6 +29,10 @@ export default async function handler(
   } else {
     const to: string[] = ["dump.miguelrocha.dev@gmail.com"];
 
+    const {
+      data: { subject, content },
+    } = body;
+
     try {
       const email = await mailer.sendMail({
         from: {
@@ -37,9 +41,9 @@ export default async function handler(
         },
         to,
 
-        subject: "meu assunto",
+        subject,
 
-        html: ``,
+        html: content,
       });
 
       console.log(email);

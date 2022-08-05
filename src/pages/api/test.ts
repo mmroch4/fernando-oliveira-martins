@@ -1,5 +1,6 @@
-import { verifyWebhookSignature } from "@graphcms/utils";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { mailer } from "../../lib/mailer";
+import { verifyWebhookSignature } from "../../services/verify-webhook-signature";
 
 // ol(kHandle)]: TCP {
 //       reading: true,
@@ -120,17 +121,32 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const { body } = req;
-  const signature = req.headers["gcms-signature"];
+  const { "gcms-signature": signature } = req.headers;
 
   const isValid = verifyWebhookSignature({
     body,
-    signature,
+    signature: signature as string,
     secret,
   });
 
-  console.log(isValid);
-  console.log(req.body);
-  console.log(req.headers);
+  if (!isValid) {
+    res.status(400).json({
+      ok: false,
+      message: "Invalid request",
+    });
+  } else {
+    const mailToSend = await mailer.sendMail({
+      text: "Meu mail de teste",
+      subject: "meu assunto",
+      from: "Miguel Rocha <miguelrocha.dev@gmail.com>",
+      to: ["dump.miguelrocha.dev@gmail.com"],
+    });
 
-  res.json({ isValid, body, headers: req.headers });
+    console.log(mailToSend);
+
+    res.status(200).json({
+      ok: true,
+      message: "Everything ok",
+    });
+  }
 }

@@ -46,7 +46,7 @@ const Divider = styled("hr", {
   margin: "0.5rem 0 0.25rem",
 
   border: "1px solid $borderPrimary",
-  borderRadius: "9999999px",
+  borderRadius: 9999999,
 });
 
 const ShareContainer = styled("div", {

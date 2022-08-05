@@ -129,7 +129,7 @@ export const ItemContainerItem = styled("span", {
       true: {
         background: "$backgroundColorTertiary20",
 
-        borderColor: '$backgroundColorTertiary20',
+        borderColor: "transparent",
 
         "&:hover": {
           background: "$backgroundColorTertiary30",

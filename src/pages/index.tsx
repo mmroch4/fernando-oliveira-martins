@@ -255,8 +255,10 @@ const Page: NextPage<IProps> = ({ posts, categories, archives }) => {
     return title.toLowerCase().includes(search.toLowerCase());
   });
 
-  const { values, handleClick, handleClearFilters, isFilter } =
-    useFilter<Post>(searchedValues, []);
+  const { values, handleClick, handleClearFilters, isFilter } = useFilter<Post>(
+    searchedValues,
+    []
+  );
 
   return (
     <>
@@ -318,6 +320,38 @@ const Page: NextPage<IProps> = ({ posts, categories, archives }) => {
                   );
                 })}
               </CategoriesContainer>
+            </StyledPopoverContent>
+          }
+        />
+
+        <Popover
+          trigger={
+            <Item>
+              <TbFolders />
+            </Item>
+          }
+          content={
+            <StyledPopoverContent>
+              <StyledArchives>
+                <h3>Arquivos</h3>
+
+                <ul>
+                  {archives.map((archive) => {
+                    const [month, year] = archive.name.split(" ") as string[];
+
+                    return (
+                      <Link
+                        key={archive.id}
+                        href={`/${year}/${
+                          months.indexOf(month.toLowerCase()) + 1
+                        }/`}
+                      >
+                        <li>{archive.name}</li>
+                      </Link>
+                    );
+                  })}
+                </ul>
+              </StyledArchives>
             </StyledPopoverContent>
           }
         />
@@ -472,25 +506,6 @@ const Page: NextPage<IProps> = ({ posts, categories, archives }) => {
             );
           })}
         </StyledPostsContainer>
-
-        <StyledAside>
-          <h3>Arquivos</h3>
-
-          <ul>
-            {archives.map((archive) => {
-              const [month, year] = archive.name.split(" ") as string[];
-
-              return (
-                <Link
-                  key={archive.id}
-                  href={`/${year}/${months.indexOf(month.toLowerCase()) + 1}/`}
-                >
-                  <li>{archive.name}</li>
-                </Link>
-              );
-            })}
-          </ul>
-        </StyledAside>
       </Main>
 
       <Footer />

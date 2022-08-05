@@ -24,5 +24,5 @@ export const StyledPopoverContent = styled("div", {
   borderRadius: 10,
 
   padding: "0.5rem 1rem",
-  marginBlock: "0.25rem",
+  margin: "0.5rem",
 });

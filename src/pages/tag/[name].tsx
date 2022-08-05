@@ -369,6 +369,7 @@ const Page: NextPage<Props> = ({ category, archives, categories }) => {
                             ? isFilter(value.name.toLowerCase())
                             : false
                         }
+                        locked={value.id === category.id}
                         onClick={() => {
                           if (value.id !== category.id) {
                             handleClick(value.name.toLowerCase());

@@ -10,9 +10,12 @@ const Container = styled("footer", {
 });
 
 const Divider = styled("hr", {
-  margin: "1.25rem 0 0.9375rem",
   width: "4rem",
-  border: "1px solid $backgroundSecondary",
+  background: "$backgroundSecondary",
+
+  margin: "1.25rem 0 0.9375rem",
+
+  border: "1px solid $borderPrimary",
   borderRadius: 9999999,
 });
 

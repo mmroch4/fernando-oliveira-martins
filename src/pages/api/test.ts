@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import markdown from "nodemailer-markdown";
 import { mailer } from "../../lib/mailer";
 import { verifyWebhookSignature } from "../../services/verify-webhook-signature";
 
@@ -34,6 +35,8 @@ export default async function handler(
     } = body;
 
     try {
+      mailer.use("compile", markdown());
+
       const email = await mailer.sendMail({
         from: {
           name: "Fernando Oliveira Martins",

@@ -135,18 +135,39 @@ export default async function handler(
       message: "Invalid request",
     });
   } else {
-    const mailToSend = await mailer.sendMail({
-      text: "Meu mail de teste",
-      subject: "meu assunto",
-      from: "Miguel Rocha <miguelrocha.dev@gmail.com>",
-      to: ["dump.miguelrocha.dev@gmail.com"],
-    });
+    const to: string[] = ["dump.miguelrocha.dev@gmail.com"];
 
-    console.log(mailToSend);
+    try {
+      const email = await mailer.sendMail({
+        from: {
+          name: "Fernando Oliveira Martins",
+          address: process.env.MAIL_USER as string,
+        },
+        to,
 
-    res.status(200).json({
-      ok: true,
-      message: "Everything ok",
-    });
+        subject: "meu assunto",
+
+        html: `
+          <div style="display:flex;flex-direction:row;align-items:center;justify-content:space-between;">
+            <h1 style="color:red;">Meu super fodastico email</h1>
+            <p style="color:blue;"><strong>novidades</strong> por aqui fml</p>
+          </div>
+        `,
+      });
+
+      console.log(email);
+
+      res.status(200).json({
+        ok: true,
+        message: "Everything ok",
+      });
+    } catch (err) {
+      console.log(err);
+
+      res.status(500).json({
+        ok: false,
+        message: "Unknown error",
+      });
+    }
   }
 }

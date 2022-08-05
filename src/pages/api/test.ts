@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import markdown from "nodemailer-markdown";
+import { markdown } from "nodemailer-markdown";
 import { mailer } from "../../lib/mailer";
 import { verifyWebhookSignature } from "../../services/verify-webhook-signature";
 
@@ -46,7 +46,7 @@ export default async function handler(
 
         subject,
 
-        html: content,
+        markdown: content,
       });
 
       console.log(email);

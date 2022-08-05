@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { mailer } from "../../lib/mailer";
 import { verifyWebhookSignature } from "../../services/verify-webhook-signature";
 
-const secret = process.env.SECRET
+const secret = process.env.SECRET;
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,6 +11,7 @@ export default async function handler(
   const { body } = req;
   const { "gcms-signature": signature } = req.headers;
 
+  console.log(req);
   console.log(req.body);
   console.log(signature);
 
@@ -38,12 +39,7 @@ export default async function handler(
 
         subject: "meu assunto",
 
-        html: `
-          <div style="display:flex;flex-direction:row;align-items:center;justify-content:space-between;">
-            <h1 style="color:red;">Meu super fodastico email</h1>
-            <p style="color:blue;"><strong>novidades</strong> por aqui fml</p>
-          </div>
-        `,
+        html: ``,
       });
 
       console.log(email);

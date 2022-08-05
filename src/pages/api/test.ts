@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { mailer } from "../../lib/mailer";
 import { verifyWebhookSignature } from "../../services/verify-webhook-signature";
 
-const secret = "kjblajshvdojhasdljahsvdljashvdashvdlajshvdasljhdvaljs";
+const secret = process.env.SECRET
 
 export default async function handler(
   req: NextApiRequest,
@@ -17,7 +17,7 @@ export default async function handler(
   const isValid = verifyWebhookSignature({
     body,
     signature: signature as string,
-    secret,
+    secret: secret as string,
   });
 
   if (!isValid) {

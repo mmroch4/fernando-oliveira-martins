@@ -33,7 +33,7 @@ export default async function handler(
     try {
       mailer.use("compile", markdown());
 
-      const email = await mailer.sendMail({
+      await mailer.sendMail({
         from: {
           name: "Fernando Oliveira Martins",
           address: process.env.MAIL_USER as string,

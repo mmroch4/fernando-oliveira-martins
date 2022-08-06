@@ -3,12 +3,39 @@ import { markdown } from "nodemailer-markdown";
 import { mailer } from "../../../lib/mailer";
 import { verifyWebhookSignature } from "../../../services/verify-webhook-signature";
 
+// "data": {
+//     "__typename": "Email",
+//     "content": "# meu titulo\n\n## meu subtitulo\n\naqui mermao",
+//     "createdAt": "2022-08-05T23:14:08.619894+00:00",
+//     "createdBy": {
+//       "__typename": "User",
+//       "id": "cl08dlo5i3jl101z33sjudks3"
+//     },
+//     "id": "cl6h333ow12f60bmo5z6cvj8i",
+//     "publishedAt": "2022-08-06T12:34:11.745848+00:00",
+//     [Newsletter] - Send email
+// "publishedBy": {
+//       "__typename": "User",
+//       "id": "cl08dlo5i3jl101z33sjudks3"
+//     },
+//     "scheduledIn": [],
+//     "stage": "PUBLISHED",
+//     "subject": "sasha teu tio",
+//     "updatedAt": "2022-08-05T23:33:49.752542+00:00",
+//     "updatedBy": {
+//       "__typename": "User",
+//       "id": "cl08dlo5i3jl101z33sjudks3"
+//     }
+//   }
+
 const secret = process.env.SECRET;
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  console.log(req)
+
   const { body } = req;
   const { "gcms-signature": signature } = req.headers;
 

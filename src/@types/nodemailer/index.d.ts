@@ -1,7 +1,7 @@
-import { Options as Original } from "nodemailer/lib/mailer";
+import "nodemailer/lib/mailer";
 
 declare module "nodemailer/lib/mailer" {
-  export interface Options {
+  declare interface Options {
     markdown: string | Buffer | Readable | AttachmentLike | undefined;
   }
 }

@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { markdown } from "nodemailer-markdown";
-import { mailer } from "../../lib/mailer";
-import { verifyWebhookSignature } from "../../services/verify-webhook-signature";
+import { mailer } from "../../../lib/mailer";
+import { verifyWebhookSignature } from "../../../services/verify-webhook-signature";
 
 const secret = process.env.SECRET;
 
@@ -11,10 +11,6 @@ export default async function handler(
 ) {
   const { body } = req;
   const { "gcms-signature": signature } = req.headers;
-
-  console.log(req);
-  console.log(req.body);
-  console.log(signature);
 
   const isValid = verifyWebhookSignature({
     body,
@@ -45,11 +41,8 @@ export default async function handler(
         to,
 
         subject,
-
         markdown: content,
       });
-
-      console.log(email);
 
       res.status(200).json({
         ok: true,

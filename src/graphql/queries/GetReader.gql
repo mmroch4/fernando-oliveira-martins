@@ -1,0 +1,6 @@
+query GetReader($email: String!) {
+  reader(where: { email: $email }) {
+    id
+    email
+  }
+}

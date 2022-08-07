@@ -1,0 +1,6 @@
+query GetReaders {
+  readers {
+    email
+    id
+  }
+}

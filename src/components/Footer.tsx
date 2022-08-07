@@ -1,3 +1,7 @@
+import { AxiosError } from "axios";
+import { Magic } from "magic-sdk";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { api } from "../services/api";
 import { styled } from "../stitches/stitches.config";
 
 const Container = styled("footer", {
@@ -33,10 +37,59 @@ const Message = styled("p", {
   },
 });
 
+interface Values {
+  email: string;
+}
+
+interface Data {
+  ok: true;
+  message: string;
+  payload?: {
+    createded: string;
+    published: string;
+  };
+}
+
+const MAGIC_PUBLISHABLE_KEY = process.env
+  .NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY as string;
+
 export const Footer = () => {
+  const { register, handleSubmit } = useForm<Values>();
+
+  const onSubmit: SubmitHandler<Values> = async ({ email }) => {
+    const magic = new Magic(MAGIC_PUBLISHABLE_KEY);
+
+    const didToken = await magic.auth.loginWithMagicLink({ email });
+
+    try {
+      await api.post<Data>(
+        "/api/newsletter/register",
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${didToken}`,
+          },
+        }
+      );
+
+      alert(`${email} registrado com sucesso em nossa newsletter`);
+    } catch (error) {
+      const err = error as AxiosError<Data>;
+
+      alert(err.response?.data.message as string);
+    }
+  };
+
   return (
     <Container>
       <Divider />
+
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <input type="email" {...register("email")} />
+
+        <button type="submit">Registrar</button>
+      </form>
 
       <Message>
         Feito por{" "}

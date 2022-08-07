@@ -1,0 +1,10 @@
+mutation RegisterReader($email: String!) {
+  createReader(data: { email: $email }) {
+    id
+    email
+  }
+  publishReader(where: { email: $email }) {
+    id
+    email
+  }
+}

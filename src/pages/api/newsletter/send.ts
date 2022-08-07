@@ -1,5 +1,5 @@
+import { astToHtmlString } from "@graphcms/rich-text-html-renderer";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { markdown } from "nodemailer-markdown";
 import { GetReadersDocument, GetReadersQuery } from "../../../graphql/schema";
 import { apolloClient } from "../../../lib/apollo";
 import { mailer } from "../../../lib/mailer";
@@ -12,7 +12,7 @@ interface Body {
     stage: "PUBLISHED" | string;
     id: string;
     subject: string;
-    content: string;
+    content: any;
     scheduledIn: [];
     createdAt: Date;
     createdBy: {
@@ -79,7 +79,10 @@ export default async function handler(
 
     const sendTo: string[] = readers.map((reader) => reader.email);
 
-    mailer.use("compile", markdown());
+    const html = astToHtmlString({
+      content,
+    });
+
     await mailer.sendMail({
       from: {
         name: "Fernando Oliveira Martins",
@@ -88,7 +91,7 @@ export default async function handler(
       to: sendTo,
 
       subject,
-      markdown: content,
+      html,
     });
 
     res.status(200).json({

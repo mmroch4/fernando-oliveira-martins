@@ -644,6 +644,21 @@
     "@floating-ui/dom" "^0.5.3"
     use-isomorphic-layout-effect "^1.1.1"
 
+"@graphcms/rich-text-html-renderer@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@graphcms/rich-text-html-renderer/-/rich-text-html-renderer-0.2.0.tgz#5a9db755c440ad781703a47b66572ccd877b165d"
+  integrity sha512-kXrHGtNq0yX6p1HgJoLyCgWeK/NlTeSIv++bTXnRv/aZcsSKdIlVG7dj4f21xGxJ1zML2wqJuG8SKUlmDjn1KQ==
+  dependencies:
+    "@graphcms/rich-text-types" "^0.5.0"
+    escape-html "^1.0.3"
+
+"@graphcms/rich-text-types@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@graphcms/rich-text-types/-/rich-text-types-0.5.0.tgz#9a8707de62d7c9e63b8912e269cf7cb912d13495"
+  integrity sha512-3oKVp2V1f9zYn9dYpLvePeu/8w8nQhZyv3FWm7yUtY/AlVXRwU3HJtIXvvdwAkmTuNANNhcDkBOzfkZaKJNADw==
+  dependencies:
+    tslib "^2.0.0"
+
 "@graphql-codegen/cli@^2.8.1":
   version "2.8.1"
   resolved "https://registry.yarnpkg.com/@graphql-codegen/cli/-/cli-2.8.1.tgz#8e8f70417f3a0e87f266953c41c6424c6e76b473"
@@ -2670,6 +2685,11 @@ escalade@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/escalade/-/escalade-3.1.1.tgz#d8cfdc7000965c5a0174b4a82eaa5c0552742e40"
   integrity sha512-k0er2gUkLf8O0zKJiAhmkTnJlTvINGv7ygDNPbeIsX/TJjGJZHuh9B2UxbsaEkmlEo9MfhrSzmhIlhRlI2GXnw==
+
+escape-html@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/escape-html/-/escape-html-1.0.3.tgz#0258eae4d3d0c0974de1c169188ef0051d1d1988"
+  integrity sha512-NiSupZ4OeuGwr68lGIeym/ksIZMJodUGOSCZ/FSnTxcrekbvqrgdUxlJOMpijaKZVjAJrWrGs/6Jy8OMuyj9ow==
 
 escape-string-regexp@^1.0.5:
   version "1.0.5"

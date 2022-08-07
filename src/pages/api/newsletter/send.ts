@@ -80,7 +80,7 @@ export default async function handler(
     const sendTo: string[] = readers.map((reader) => reader.email);
 
     const html = astToHtmlString({
-      content,
+      content: content.json,
     });
 
     await mailer.sendMail({

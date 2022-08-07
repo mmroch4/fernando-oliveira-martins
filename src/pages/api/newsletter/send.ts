@@ -33,25 +33,13 @@ interface Body {
 }
 
 const secret = process.env.SECRET;
-const token = process.env.TOKEN;
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   const { body } = req;
-  const { "gcms-signature": signature, "X-Token": sendToken } = req.headers;
-
-  if (sendToken !== token) {
-    console.log("token nao é valido");
-
-    res.status(400).json({
-      ok: false,
-      message: "Invalid request",
-    });
-
-    return;
-  }
+  const { "gcms-signature": signature } = req.headers;
 
   const isValid = await verifyWebhookSignature({
     body,

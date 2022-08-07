@@ -84,13 +84,12 @@ export const Footer = () => {
   return (
     <Container>
       <Divider />
-
+      Junte-se a nossa newsletter
       <form onSubmit={handleSubmit(onSubmit)}>
         <input type="email" {...register("email")} />
 
         <button type="submit">Registrar</button>
       </form>
-
       <Message>
         Feito por{" "}
         <a href={"https://github.com/mmroch4"} target="_blank" rel="noreferrer">

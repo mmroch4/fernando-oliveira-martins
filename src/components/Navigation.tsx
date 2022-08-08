@@ -78,6 +78,10 @@ export const Item = styled("span", {
         width: "fit-content",
 
         padding: "0.5rem",
+
+        "@md399": {
+          width: "100%",
+        },
       },
     },
   },
@@ -190,8 +194,8 @@ export const Input = styled("input", {
     color: "$fontPrimary",
   },
 
-  "@md399": {
-    width: 150,
+  "@md599": {
+    width: "100%",
   },
 });
 

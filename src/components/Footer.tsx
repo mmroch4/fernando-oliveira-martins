@@ -1,6 +1,7 @@
 import { AxiosError } from "axios";
-import { Magic } from "magic-sdk";
+import { useRouter } from "next/router";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useLocalStorage } from "usehooks-ts";
 import { api } from "../services/api";
 import { styled } from "../stitches/stitches.config";
 
@@ -42,7 +43,7 @@ interface Values {
 }
 
 interface Data {
-  ok: true;
+  ok: boolean;
   message: string;
   payload?: {
     createded: string;
@@ -50,30 +51,31 @@ interface Data {
   };
 }
 
-const MAGIC_PUBLISHABLE_KEY = process.env
-  .NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY as string;
-
 export const Footer = () => {
+  const { push } = useRouter();
   const { register, handleSubmit } = useForm<Values>();
+  const [typedEmail, setTypedEmail] = useLocalStorage<string | null>(
+    "typed@email",
+    null
+  );
 
   const onSubmit: SubmitHandler<Values> = async ({ email }) => {
-    const magic = new Magic(MAGIC_PUBLISHABLE_KEY);
-
-    const didToken = await magic.auth.loginWithMagicLink({ email });
-
     try {
       await api.post<Data>(
-        "/api/newsletter/register",
-        {},
+        "/api/newsletter/confirm",
+        {
+          email,
+        },
         {
           headers: {
             "Content-Type": "application/json",
-            authorization: `Bearer ${didToken}`,
           },
         }
       );
 
-      alert(`${email} registrado com sucesso em nossa newsletter`);
+      setTypedEmail(email);
+
+      push("/newsletter/confirmar/");
     } catch (error) {
       const err = error as AxiosError<Data>;
 

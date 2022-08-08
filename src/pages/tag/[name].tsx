@@ -315,7 +315,11 @@ const Page: NextPage<Props> = ({ category, archives, categories }) => {
       />
 
       <Toolbar>
-        <StyledInnerContainer>
+        <StyledInnerContainer
+          style={{
+            flex: 1,
+          }}
+        >
           <LabelPrimitive.Root asChild htmlFor="search-input">
             <Item input>
               <TbSearch />

@@ -41,8 +41,6 @@ export default async function handler(
   const { body } = req;
   const { "gcms-signature": signature } = req.headers;
 
-  console.log(body);
-
   const isValid = await verifyWebhookSignature({
     body,
     signature: signature as string,
@@ -73,6 +71,7 @@ export default async function handler(
 
     const html = astToHtmlString({
       content: content.json,
+      references: content?.references,
     });
 
     await mailer.sendMail({

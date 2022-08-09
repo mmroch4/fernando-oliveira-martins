@@ -19,3 +19,4 @@ export function useSearch<V>(values: V[], callbackFn: (value: V) => any) {
 
   return { values: searchedValues, search, setSearch };
 }
+

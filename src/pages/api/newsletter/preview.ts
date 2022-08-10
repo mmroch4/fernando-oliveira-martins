@@ -1,7 +1,5 @@
 import { astToHtmlString } from "@graphcms/rich-text-html-renderer";
-import type { NextApiRequest, NextApiResponse } from "next";
-import { GetReadersDocument, GetReadersQuery } from "../../../graphql/schema";
-import { apolloClient } from "../../../lib/apollo";
+import { NextApiRequest, NextApiResponse } from "next/types";
 import { mailer } from "../../../lib/mailer";
 import { verifyWebhookSignature } from "../../../services/verify-webhook-signature";
 
@@ -32,7 +30,8 @@ interface Body {
   };
 }
 
-const HYGRAPH_HOOK_SEND_SECRET = process.env.HYGRAPH_HOOK_SEND_SECRET;
+const HYGRAPH_HOOK_PREVIEW_SECRET = process.env
+  .HYGRAPH_HOOK_PREVIEW_SECRET as string;
 
 export default async function handler(
   req: NextApiRequest,
@@ -44,7 +43,7 @@ export default async function handler(
   const isValid = await verifyWebhookSignature({
     body,
     signature: signature as string,
-    secret: HYGRAPH_HOOK_SEND_SECRET as string,
+    secret: HYGRAPH_HOOK_PREVIEW_SECRET as string,
   });
 
   if (!isValid) {
@@ -61,14 +60,6 @@ export default async function handler(
   } = body as Body;
 
   try {
-    const {
-      data: { readers },
-    } = await apolloClient.query<GetReadersQuery>({
-      query: GetReadersDocument,
-    });
-
-    const sendTo: string[] = readers.map((reader) => reader.email);
-
     const html = `<style>
       .default {
         box-sizing: border-box;
@@ -353,9 +344,9 @@ export default async function handler(
         name: "Fernando Oliveira Martins",
         address: process.env.MAIL_USER as string,
       },
-      to: sendTo,
+      to: process.env.MAIL_USER as string,
 
-      subject: `[Newsletter]: ${subject}`,
+      subject: `[Newsletter preview]: ${subject}`,
       html,
     });
 

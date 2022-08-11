@@ -1,9 +1,13 @@
+import * as LabelPrimitive from "@radix-ui/react-label";
 import { AxiosError } from "axios";
 import { useRouter } from "next/router";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { TbMail, TbSend } from "react-icons/tb";
 import { useLocalStorage } from "usehooks-ts";
 import { api } from "../services/api";
 import { styled } from "../stitches/stitches.config";
+import { Input, Item } from "./Navigation";
+import { StyledTooltipContent, Tooltip } from "./utils/Tooltip";
 
 const Container = styled("footer", {
   display: "flex",
@@ -18,10 +22,54 @@ const Divider = styled("hr", {
   width: "4rem",
   background: "$backgroundSecondary",
 
-  margin: "1.25rem 0 0.9375rem",
+  marginBlock: "1rem",
 
   border: "1px solid $borderPrimary",
   borderRadius: 9999999,
+});
+
+const Form = styled("form", {
+  marginTop: "1rem",
+
+  width: "100%",
+  height: "2.5rem",
+
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "center",
+
+  gap: "0.5rem",
+
+  "& button": {
+    width: "2.5rem",
+    height: "2.5rem",
+
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+
+    background: "$backgroundColorPrimary20",
+    border: "1px solid transparent",
+    borderRadius: 10,
+
+    cursor: "pointer",
+
+    "& svg": {
+      width: "1.5rem",
+      height: "1.5rem",
+
+      fill: "none",
+      stroke: "$colorPrimary",
+      strokeWidth: 1.5,
+      strokeLinecap: "round",
+      strokeLinejoin: "round",
+    },
+
+    "&:hover": {
+      background: "$backgroundColorPrimary30",
+    },
+  },
 });
 
 const Message = styled("p", {
@@ -86,12 +134,41 @@ export const Footer = () => {
   return (
     <Container>
       <Divider />
-      Junte-se a nossa newsletter
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <input type="email" {...register("email")} />
 
-        <button type="submit">Registrar</button>
-      </form>
+      <h2
+        style={{
+          textAlign: "center",
+        }}
+      >
+        Junte-se a nossa newsletter
+      </h2>
+
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <LabelPrimitive.Root asChild htmlFor="newsletter-input">
+          <Item input>
+            <TbMail />
+
+            <Input
+              id="newsletter-input"
+              type="email"
+              {...register("email")}
+              placeholder={"exemplo@gmail.com"}
+            />
+          </Item>
+        </LabelPrimitive.Root>
+
+        <Tooltip
+          trigger={
+            <button type="submit">
+              <TbSend />
+            </button>
+          }
+          content={<StyledTooltipContent>Inscrever-me</StyledTooltipContent>}
+        />
+      </Form>
+
+      <Divider />
+
       <Message>
         Feito por{" "}
         <a href={"https://github.com/mmroch4"} target="_blank" rel="noreferrer">

@@ -131,13 +131,7 @@ export const ItemContainerItem = styled("span", {
     },
     locked: {
       true: {
-        background: "$backgroundColorTertiary20",
-
-        borderColor: "transparent",
-
-        "&:hover": {
-          background: "$backgroundColorTertiary30",
-        },
+        cursor: 'not-allowed',
 
         "& span": {
           background: "$backgroundColorTertiary30",

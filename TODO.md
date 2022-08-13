@@ -1,20 +1,6 @@
 # TODO
 
-## EXTRAS
-
-[] - Language support
-[] - Website version
-[] - Color blind mode
-[] - Newsletter
-
-## COMPONENTS
-
-[] - Footer
-[] - Loading Skeleton
-
-## FIXME
-
-[] - Search component
-[] - Clean Code
-[] - Remake Tooltip util
-[] - Remake Popover util
+[] - correct share messages
+[] - make toasts
+[] - join newsletter page
+[] - remake tooltip and popover utils

@@ -1,4 +1,3 @@
-import * as LabelPrimitive from "@radix-ui/react-label";
 import { AxiosError } from "axios";
 import { useRouter } from "next/router";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -6,8 +5,8 @@ import { TbMail, TbSend } from "react-icons/tb";
 import { useLocalStorage } from "usehooks-ts";
 import { api } from "../services/api";
 import { styled } from "../stitches/stitches.config";
-import { Input, Item } from "./Navigation";
-import { StyledTooltipContent, Tooltip } from "./utils/Tooltip";
+import { Input } from "./Input";
+import { StyledTooltipContent, Tooltip } from "./Tooltip";
 
 const Container = styled("footer", {
   display: "flex",
@@ -144,18 +143,15 @@ export const Footer = () => {
       </h2>
 
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <LabelPrimitive.Root asChild htmlFor="newsletter-input">
-          <Item input>
-            <TbMail />
-
-            <Input
-              id="newsletter-input"
-              type="email"
-              {...register("email")}
-              placeholder={"exemplo@gmail.com"}
-            />
-          </Item>
-        </LabelPrimitive.Root>
+        <Input
+          id="@newsletter-join-input"
+          icon={<TbMail />}
+          props={{
+            type: "email",
+            placeholder: "ex: exemplo@gmail.com",
+            ...register("email"),
+          }}
+        />
 
         <Tooltip
           trigger={

@@ -2,8 +2,8 @@ import { useTheme } from "next-themes";
 import Link from "next/link";
 import { TbFingerprint, TbHome, TbPalette, TbSettings } from "react-icons/tb";
 import { styled } from "../stitches/stitches.config";
-import { Popover, StyledPopoverContent } from "./utils/Popover";
-import { StyledTooltipContent, Tooltip } from "./utils/Tooltip";
+import { Popover, StyledPopoverContent } from "./Popover";
+import { StyledTooltipContent, Tooltip } from "./Tooltip";
 
 const StyledNav = styled("nav", {
   width: "100%",

@@ -1,25 +1,27 @@
-import { differenceInMilliseconds, format, milliseconds } from "date-fns";
-import PT from "date-fns/locale/pt";
+import { differenceInMilliseconds, milliseconds } from "date-fns";
 import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
+import { Card } from "../../../components/Card";
+import { Divider } from "../../../components/Divider";
 import { Footer } from "../../../components/Footer";
 import { Hero } from "../../../components/Hero";
 import { Loading } from "../../../components/Loading";
 import { Navigation } from "../../../components/Navigation";
 import {
+  Archive,
   GetAllArchivesWithPostsDocument,
   GetAllArchivesWithPostsQuery,
   GetAllPostsToSelectDocument,
   GetAllPostsToSelectQuery,
   GetPostDocument,
   GetPostQuery,
-  GetPostsToRecommendQuery,
   Post,
 } from "../../../graphql/schema";
 import { apolloClient } from "../../../lib/apollo";
-import { RecommendPosts } from "../../../services/RecommendPosts";
+import { formatDate } from "../../../services/format-date";
+import { RecommendPosts } from "../../../services/recommend-posts";
 import { styled } from "../../../stitches/stitches.config";
 import { months } from "../../../utils/months";
 
@@ -127,28 +129,15 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   return {
     props: {
       post,
-      recommendedPosts: recommendedPosts.map((post) => {
-        const [month, year] = post.archive?.name.split(" ") as string[];
-
-        return {
-          href: `/${year}/${months.indexOf(month.toLowerCase()) + 1}/${
-            post.slug
-          }`,
-          ...post,
-        };
-      }),
+      recommendedPosts: recommendedPosts,
     },
     revalidate: 10 * 60, // 10 minutes
   };
 };
 
-type IRecommendPost = GetPostsToRecommendQuery["posts"][0] & {
-  href: string;
-};
-
 interface IProps {
   post: Post;
-  recommendedPosts: IRecommendPost[];
+  recommendedPosts: Post[];
 }
 
 const StyledContent = styled("div", {
@@ -295,68 +284,6 @@ const RecommendedPostsContainer = styled("div", {
   },
 });
 
-const StyledPostToRecommend = styled("div", {
-  flex: "auto",
-
-  width: "calc((100% / 3) - 1rem)",
-
-  padding: "0.5rem 1rem",
-
-  background: "transparent",
-
-  border: "1px solid $borderPrimary",
-  borderRadius: 10,
-
-  "& h3": {
-    cursor: "pointer",
-
-    fontSize: "1.375rem",
-  },
-
-  "& h3:hover": {
-    color: "$colorPrimary",
-  },
-
-  "& p": { margin: "0.2rem 0 0.4rem" },
-
-  "& div": {
-    display: "flex",
-    flexDirection: "row",
-    gap: "0.4rem",
-  },
-
-  "& div span": {
-    cursor: "pointer",
-
-    background: "transparent",
-
-    border: "1px solid $borderPrimary",
-    borderRadius: 10,
-
-    padding: "0.2rem 0.4rem",
-
-    fontSize: "1rem",
-  },
-
-  "& div span:hover": {
-    background: "$backgroundSecondary",
-  },
-
-  "@md1023": {
-    width: "100%",
-  },
-});
-
-const Divider = styled("hr", {
-  width: "4rem",
-  background: "$backgroundSecondary",
-
-  margin: "0.5rem 0 0.25rem",
-
-  border: "1px solid $borderPrimary",
-  borderRadius: "9999999px",
-});
-
 const Main = styled("main", {
   width: "100%",
 
@@ -439,8 +366,6 @@ const StyledInfoBox = styled("span", {
 const Page: NextPage<IProps> = ({ post, recommendedPosts }) => {
   const { isFallback } = useRouter();
 
-  const shareMessage = "Super recomendo esse conteúdo";
-
   if (isFallback) return <Loading size={"md"} />;
 
   const [archiveMonth, archiveYear] = post.archive?.name.split(" ") as string[];
@@ -451,7 +376,7 @@ const Page: NextPage<IProps> = ({ post, recommendedPosts }) => {
 
       <Hero
         share={{
-          message: shareMessage,
+          message: "Super recomendo esse conteúdo",
         }}
         content={{
           title: post.title,
@@ -461,12 +386,7 @@ const Page: NextPage<IProps> = ({ post, recommendedPosts }) => {
 
       <Main>
         <StyledInfo>
-          Publicado em{" "}
-          {format(
-            new Date(post.publishedAt),
-            "EEEE', 'd' de 'MMMM' às 'k':'mm",
-            { locale: PT }
-          )}
+          Publicado em {formatDate(post.publishedAt)}
           <div>
             <Link
               href={`/${archiveYear}/${String(
@@ -496,37 +416,20 @@ const Page: NextPage<IProps> = ({ post, recommendedPosts }) => {
         <Divider />
 
         <RecommendedPostsContainer>
-          {recommendedPosts.map((post) => {
-            return (
-              <StyledPostToRecommend key={post.id}>
-                <Link href={post.href}>
-                  <h3>{post.title}</h3>
-                </Link>
-
-                <p>
-                  Publicado em{" "}
-                  {format(
-                    new Date(post.publishedAt),
-                    "EEEE', 'd' de 'MMMM' às 'k':'mm",
-                    { locale: PT }
-                  )}
-                </p>
-
-                <div>
-                  {post.categories.map((category) => {
-                    return (
-                      <Link
-                        href={`/tag/${category.name.toLowerCase()}`}
-                        key={category.id}
-                      >
-                        <span>{category.name}</span>
-                      </Link>
-                    );
-                  })}
-                </div>
-              </StyledPostToRecommend>
-            );
-          })}
+          {recommendedPosts.map(
+            ({ id, slug, title, publishedAt, archive, categories }) => {
+              return (
+                <Card
+                  key={id}
+                  slug={slug}
+                  title={title}
+                  publishedAt={publishedAt}
+                  archive={archive as Archive}
+                  categories={categories}
+                />
+              );
+            }
+          )}
         </RecommendedPostsContainer>
       </Main>
 

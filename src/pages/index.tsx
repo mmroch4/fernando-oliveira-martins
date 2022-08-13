@@ -1,6 +1,3 @@
-import * as LabelPrimitive from "@radix-ui/react-label";
-import { format } from "date-fns";
-import PT from "date-fns/locale/pt";
 import type { GetStaticProps, NextPage } from "next";
 import Link from "next/link";
 import {
@@ -10,11 +7,13 @@ import {
   TbPlus,
   TbSearch,
 } from "react-icons/tb";
+import { Card } from "../components/Card";
 import { Footer } from "../components/Footer";
+import { Grid } from "../components/Grid";
 import { Hero } from "../components/Hero";
+import { Input } from "../components/Input";
 import {
   Icon,
-  Input,
   Item,
   ItemContainerHeader,
   ItemContainerHeaderTitle,
@@ -23,9 +22,9 @@ import {
   Navigation,
   StyledInnerContainer,
 } from "../components/Navigation";
+import { Popover, StyledPopoverContent } from "../components/Popover";
 import { Toolbar } from "../components/Toolbar";
-import { Popover, StyledPopoverContent } from "../components/utils/Popover";
-import { StyledTooltipContent, Tooltip } from "../components/utils/Tooltip";
+import { StyledTooltipContent, Tooltip } from "../components/Tooltip";
 import {
   Archive,
   Category,
@@ -49,108 +48,6 @@ export const CategoriesContainer = styled("div", {
   flexWrap: "wrap",
   alignItems: "center",
   gap: "0.25rem",
-});
-
-export const Main = styled("main", {
-  width: "100%",
-
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "space-between",
-
-  gap: "1rem",
-});
-
-export const StyledAside = styled("aside", {
-  height: "100%",
-
-  padding: "0.5rem 1rem",
-
-  border: "1px solid $borderPrimary",
-  borderRadius: 10,
-
-  "& h3": {
-    marginBottom: "0.5rem",
-  },
-
-  "& ul": {
-    listStylePosition: "inside",
-
-    display: "flex",
-    flexDirection: "column",
-    gap: "0.4rem",
-  },
-
-  "& ul li": {
-    cursor: "pointer",
-  },
-
-  "& ul li:hover": {
-    color: "$colorPrimary",
-
-    textDecoration: "underline",
-  },
-
-  "@md599": {
-    display: "none",
-  },
-});
-
-const StyledPostsContainer = styled("div", {
-  flex: "1",
-
-  width: "100%",
-
-  display: "flex",
-  flexDirection: "column",
-
-  gap: "0.5rem",
-});
-
-const StyledPost = styled("div", {
-  width: "100%",
-
-  padding: "0.5rem 1rem",
-
-  background: "transparent",
-
-  border: "1px solid $borderPrimary",
-  borderRadius: 10,
-
-  "& h3": {
-    cursor: "pointer",
-
-    fontSize: "1.375rem",
-  },
-
-  "& h3:hover": {
-    color: "$colorPrimary",
-  },
-
-  "& p": { margin: "0.2rem 0 0.4rem" },
-
-  "& div": {
-    display: "flex",
-    flexDirection: "row",
-    gap: "0.4rem",
-  },
-
-  "& div span": {
-    cursor: "pointer",
-
-    background: "transparent",
-
-    border: "1px solid $borderPrimary",
-    borderRadius: 10,
-
-    padding: "0.2rem 0.4rem",
-
-    fontSize: "1rem",
-  },
-
-  "& div span:hover": {
-    background: "$backgroundSecondary",
-  },
 });
 
 export const StyledArchives = styled("div", {
@@ -177,17 +74,46 @@ export const StyledArchives = styled("div", {
   },
 });
 
+const LoadMoreButton = styled("button", {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+
+  width: "fit-content",
+  background: "$backgroundColorPrimary20",
+
+  padding: "1rem 2rem",
+
+  border: "1px solid transparent",
+  borderRadius: 10,
+
+  textTransform: "lowercase",
+  color: "$colorPrimary",
+
+  cursor: "pointer",
+
+  "&:hover": {
+    background: "$backgroundColorPrimary30",
+  },
+});
+
 interface IProps {
   posts: Post[];
   categories: Category[];
   archives: Archive[];
 }
 
+const skipBy = 10;
+
 export const getStaticProps: GetStaticProps = async () => {
   const {
     data: { posts },
   } = await apolloClient.query<GetAllPostsQuery>({
     query: GetAllPostsDocument,
+    variables: {
+      skip: 0,
+      first: skipBy,
+    },
   });
 
   const {
@@ -263,19 +189,16 @@ const Page: NextPage<IProps> = ({ posts, categories, archives }) => {
   return (
     <>
       <Navigation>
-        <LabelPrimitive.Root asChild htmlFor="search-input">
-          <Item input>
-            <TbSearch />
-
-            <Input
-              type="search"
-              placeholder="Pesquisar"
-              id="search-input"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </Item>
-        </LabelPrimitive.Root>
+        <Input
+          id="@search-input"
+          icon={<TbSearch />}
+          props={{
+            type: "search",
+            placeholder: "Pesquisar",
+            value: search,
+            onChange: (e) => setSearch(e.target.value),
+          }}
+        />
 
         <Popover
           trigger={
@@ -369,19 +292,16 @@ const Page: NextPage<IProps> = ({ posts, categories, archives }) => {
             flex: 1,
           }}
         >
-          <LabelPrimitive.Root asChild htmlFor="search-input">
-            <Item input>
-              <TbSearch />
-
-              <Input
-                type="search"
-                placeholder="Pesquisar"
-                id="search-input"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </Item>
-          </LabelPrimitive.Root>
+          <Input
+            id="@search-input"
+            icon={<TbSearch />}
+            props={{
+              type: "search",
+              placeholder: "Pesquisar",
+              value: search,
+              onChange: (e) => setSearch(e.target.value),
+            }}
+          />
         </StyledInnerContainer>
 
         <StyledInnerContainer>
@@ -470,47 +390,20 @@ const Page: NextPage<IProps> = ({ posts, categories, archives }) => {
         </StyledInnerContainer>
       </Toolbar>
 
-      <Main>
-        <StyledPostsContainer>
-          {values.map((value) => {
-            const [month, year] = value.archive?.name.split(" ") as string[];
-
-            return (
-              <StyledPost key={value.id}>
-                <Link
-                  href={`/${year}/${months.indexOf(month.toLowerCase()) + 1}/${
-                    value.slug
-                  }`}
-                >
-                  <h3>{value.title}</h3>
-                </Link>
-
-                <p>
-                  Publicado em{" "}
-                  {format(
-                    new Date(value.publishedAt),
-                    "EEEE', 'd' de 'MMMM' às 'k':'mm",
-                    { locale: PT }
-                  )}
-                </p>
-
-                <div>
-                  {value.categories.map((category) => {
-                    return (
-                      <Link
-                        href={`/tag/${category.name.toLowerCase()}`}
-                        key={category.id}
-                      >
-                        <span>{category.name}</span>
-                      </Link>
-                    );
-                  })}
-                </div>
-              </StyledPost>
-            );
-          })}
-        </StyledPostsContainer>
-      </Main>
+      <Grid>
+        {values.map(({ id, slug, title, publishedAt, archive, categories }) => {
+          return (
+            <Card
+              key={id}
+              slug={slug}
+              title={title}
+              publishedAt={publishedAt}
+              archive={archive as Archive}
+              categories={categories}
+            />
+          );
+        })}
+      </Grid>
 
       <Footer />
     </>

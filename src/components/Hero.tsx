@@ -12,7 +12,7 @@ import {
 } from "react-icons/tb";
 import { styled } from "../stitches/stitches.config";
 import { domain } from "../utils/domain";
-import { StyledTooltipContent, Tooltip } from "./utils/Tooltip";
+import { StyledTooltipContent, Tooltip } from "./Tooltip";
 
 const Header = styled("header", {
   width: "100%",

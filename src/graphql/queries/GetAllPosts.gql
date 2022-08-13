@@ -1,17 +1,17 @@
-query GetAllPosts {
-  posts(orderBy: publishedAt_DESC, first: 1000000000) {
+query GetAllPosts($skip: Int!, $first: Int!) {
+  posts(orderBy: publishedAt_DESC, skip: $skip, first: $first) {
     id
+    stage
     slug
     title
-    categories {
-      id
-      name
-    }
+    publishedAt
     archive {
       id
       name
     }
-    stage
-    publishedAt
+    categories {
+      id
+      name
+    }
   }
 }

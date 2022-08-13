@@ -1,6 +1,6 @@
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import type { ReactNode } from "react";
-import { styled } from "../../stitches/stitches.config";
+import { styled } from "../stitches/stitches.config";
 
 interface Props {
   trigger: ReactNode;

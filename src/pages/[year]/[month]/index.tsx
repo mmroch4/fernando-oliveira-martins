@@ -1,18 +1,16 @@
-import * as LabelPrimitive from "@radix-ui/react-label";
-import { format } from "date-fns";
-import PT from "date-fns/locale/pt";
 import type { GetStaticPaths, GetStaticProps, NextPage } from "next";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
 import { TbAdjustments, TbMinus, TbPlus, TbSearch } from "react-icons/tb";
 import { CategoriesContainer } from "../..";
+import { Card } from "../../../components/Card";
 import { Footer } from "../../../components/Footer";
+import { Grid } from "../../../components/Grid";
 import { Hero } from "../../../components/Hero";
+import { Input } from "../../../components/Input";
 import { Loading } from "../../../components/Loading";
 import {
   Icon,
-  Input,
   Item,
   ItemContainerHeader,
   ItemContainerHeaderTitle,
@@ -21,15 +19,9 @@ import {
   Navigation,
   StyledInnerContainer,
 } from "../../../components/Navigation";
+import { Popover, StyledPopoverContent } from "../../../components/Popover";
 import { Toolbar } from "../../../components/Toolbar";
-import {
-  Popover,
-  StyledPopoverContent,
-} from "../../../components/utils/Popover";
-import {
-  StyledTooltipContent,
-  Tooltip,
-} from "../../../components/utils/Tooltip";
+import { StyledTooltipContent, Tooltip } from "../../../components/Tooltip";
 import {
   Archive,
   Category,
@@ -96,77 +88,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   };
 };
 
-interface IProps {
+interface Props {
   archive: Archive;
   categories: Category[];
 }
-
-const Main = styled("main", {
-  width: "100%",
-
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "space-between",
-
-  gap: "1rem",
-});
-
-const StyledPostsContainer = styled("div", {
-  flex: "1",
-
-  width: "100%",
-
-  display: "flex",
-  flexDirection: "column",
-
-  gap: "0.5rem",
-});
-
-const StyledPost = styled("div", {
-  width: "100%",
-
-  padding: "0.5rem 1rem",
-
-  background: "transparent",
-
-  border: "1px solid $borderPrimary",
-  borderRadius: 10,
-
-  "& h3": {
-    cursor: "pointer",
-
-    fontSize: "1.375rem",
-  },
-
-  "& h3:hover": {
-    color: "$colorPrimary",
-  },
-
-  "& p": { margin: "0.2rem 0 0.4rem" },
-
-  "& div": {
-    display: "flex",
-    flexDirection: "row",
-    gap: "0.4rem",
-  },
-
-  "& div span": {
-    cursor: "pointer",
-
-    background: "transparent",
-
-    border: "1px solid $borderPrimary",
-    borderRadius: 10,
-
-    padding: "0.2rem 0.4rem",
-
-    fontSize: "1rem",
-  },
-
-  "& div span:hover": {
-    background: "$backgroundSecondary",
-  },
-});
 
 const EmptyMessage = styled("h2", {
   width: "100%",
@@ -174,7 +99,7 @@ const EmptyMessage = styled("h2", {
   textAlign: "center",
 });
 
-const Page: NextPage<IProps> = ({ archive, categories }) => {
+const Page: NextPage<Props> = ({ archive, categories }) => {
   const { isFallback } = useRouter();
 
   const shareMessage = "Super recomendo esse conteúdo";
@@ -194,24 +119,19 @@ const Page: NextPage<IProps> = ({ archive, categories }) => {
 
   if (isFallback) return <Loading size={"md"} />;
 
-  const [archiveMonth, archiveYear] = archive.name.split(" ") as string[];
-
   return (
     <>
       <Navigation>
-        <LabelPrimitive.Root asChild htmlFor="search-input">
-          <Item input>
-            <TbSearch />
-
-            <Input
-              type="search"
-              placeholder="Pesquisar"
-              id="search-input"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </Item>
-        </LabelPrimitive.Root>
+        <Input
+          id="@search-input"
+          icon={<TbSearch />}
+          props={{
+            type: "search",
+            placeholder: "Pesquisar",
+            value: search,
+            onChange: (e) => setSearch(e.target.value),
+          }}
+        />
 
         <Popover
           trigger={
@@ -277,19 +197,16 @@ const Page: NextPage<IProps> = ({ archive, categories }) => {
             flex: 1,
           }}
         >
-          <LabelPrimitive.Root asChild htmlFor="search-input">
-            <Item input>
-              <TbSearch />
-
-              <Input
-                type="search"
-                placeholder="Pesquisar"
-                id="search-input"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </Item>
-          </LabelPrimitive.Root>
+          <Input
+            id="@search-input"
+            icon={<TbSearch />}
+            props={{
+              type: "search",
+              placeholder: "Pesquisar",
+              value: search,
+              onChange: (e) => setSearch(e.target.value),
+            }}
+          />
         </StyledInnerContainer>
 
         <StyledInnerContainer>
@@ -347,45 +264,20 @@ const Page: NextPage<IProps> = ({ archive, categories }) => {
       </Toolbar>
 
       {archive.posts.length > 0 ? (
-        <Main>
-          <StyledPostsContainer>
-            {values.map((post) => {
-              return (
-                <StyledPost key={post.id}>
-                  <Link
-                    href={`/${archiveYear}/${
-                      months.indexOf(archiveMonth.toLowerCase()) + 1
-                    }/${post.slug}`}
-                  >
-                    <h3>{post.title}</h3>
-                  </Link>
-
-                  <p>
-                    Publicado em{" "}
-                    {format(
-                      new Date(post.publishedAt),
-                      "EEEE', 'd' de 'MMMM' às 'k':'mm",
-                      { locale: PT }
-                    )}
-                  </p>
-
-                  <div>
-                    {post.categories.map((category) => {
-                      return (
-                        <Link
-                          href={`/tag/${category.name.toLowerCase()}`}
-                          key={category.id}
-                        >
-                          <span>{category.name}</span>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </StyledPost>
-              );
-            })}
-          </StyledPostsContainer>
-        </Main>
+        <Grid>
+          {values.map(({ id, slug, title, publishedAt, categories }) => {
+            return (
+              <Card
+                key={id}
+                slug={slug}
+                title={title}
+                publishedAt={publishedAt}
+                archive={archive}
+                categories={categories}
+              />
+            );
+          })}
+        </Grid>
       ) : (
         <EmptyMessage>Nenhum conteúdo encontrado</EmptyMessage>
       )}

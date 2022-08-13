@@ -1,6 +1,6 @@
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import type { ReactNode } from "react";
-import { styled } from "../../stitches/stitches.config";
+import { styled } from "../stitches/stitches.config";
 
 interface Props {
   trigger: ReactNode;
